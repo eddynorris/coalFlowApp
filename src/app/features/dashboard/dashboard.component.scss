@@ -1,0 +1,78 @@
+
+:host {
+    display: block;
+    background-color: #f4f6f8; // Un fondo suave para la página del dashboard
+    min-height: calc(100vh - 64px); // Asumiendo un toolbar de 64px
+  }
+  
+  
+  .dashboard-card {
+    border-radius: 8px; // Bordes redondeados para las tarjetas
+    background-color: #ffffff; // Fondo blanco para las tarjetas
+  
+    .mat-mdc-card-header {
+      padding-bottom: 8px; // Menos padding inferior en el header de la card
+    }
+  
+    .mat-mdc-card-title {
+      color: #333; // Color de título más oscuro
+      font-weight: 500;
+    }
+    .mat-mdc-card-subtitle {
+      color: #666; // Color de subtítulo más suave
+      font-size: 0.8rem;
+    }
+  }
+  
+  .dashboard-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px; // Espacio entre avatar y texto
+  
+    mat-icon {
+      font-size: 28px; // Tamaño del icono dentro del avatar
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
+  // Colores específicos para avatares (puedes usar variables de tu tema de Angular Material)
+  .bg-blue-500 { background-color: #2196f3; }
+  .bg-green-500 { background-color: #4caf50; }
+  .bg-purple-500 { background-color: #9c27b0; }
+  .bg-orange-500 { background-color: #ff9800; }
+  .text-white { color: white; }
+  
+  
+  // Clases de Tailwind simuladas (si no usas Tailwind, defínelas o usa alternativas)
+  // Estas son solo para el ejemplo de la estructura del grid.
+  // Si tienes Tailwind configurado, estas clases funcionarán directamente.
+  .grid { display: grid; }
+  .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  @media (min-width: 640px) { // sm
+    .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1024px) { // lg
+    .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .gap-4 { gap: 1rem; }
+  .md\:gap-6 { 
+    @media (min-width: 768px) { // md
+      gap: 1.5rem; 
+    }
+  }
+  .transition-shadow { transition-property: box-shadow; }
+  .duration-300 { transition-duration: 300ms; }
+  
+  // Efecto hover en tarjetas
+  .mat-mdc-card.hover\:mat-elevation-z6:hover {
+    // Angular Material maneja elevaciones con clases como mat-elevation-zN
+    // Para un efecto hover, podrías definir una clase específica o usar
+    // el sistema de elevación de Material directamente si es dinámico.
+    // Este SCSS es más para un efecto visual si no se usan clases de elevación dinámicas.
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  }

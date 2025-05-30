@@ -1,0 +1,71 @@
+
+:host {
+    display: block;
+  }
+  
+  .transfer-order-container {
+    .form-card, .table-card {
+      background-color: #fff;
+      border-radius: 8px;
+    }
+  
+    .form-card {
+      max-width: 700px; // Un poco más de ancho para el formulario de traslados
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  
+  .available-stock-info {
+    font-size: 0.875rem; // 14px
+    display: flex;
+    align-items: center;
+    gap: 0.25rem; // Espacio entre icono y texto
+  }
+  
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    color: #757575;
+    font-style: italic;
+    min-height: 100px;
+  }
+  
+  .mat-mdc-table {
+    width: 100%;
+    th.mat-mdc-header-cell {
+      font-weight: 500;
+      color: rgba(0,0,0,.67);
+    }
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  // Estilos para los badges de estado
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 12px; // Más redondeado para badges
+    font-size: 0.75rem; // Más pequeño
+    font-weight: 500;
+    text-transform: uppercase;
+    display: inline-block; // Para que el padding funcione bien
+  
+    &.status-pending {
+      background-color: #e3f2fd; // Azul claro
+      color: #1e88e5; // Azul oscuro
+      border: 1px solid #90caf9;
+    }
+    &.status-completed {
+      background-color: #e8f5e9; // Verde claro
+      color: #388e3c; // Verde oscuro
+      border: 1px solid #a5d6a7;
+    }
+    &.status-cancelled {
+      background-color: #ffebee; // Rojo claro
+      color: #d32f2f; // Rojo oscuro
+      border: 1px solid #ef9a9a;
+    }
+  }
+  

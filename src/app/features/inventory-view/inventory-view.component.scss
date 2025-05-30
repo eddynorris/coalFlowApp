@@ -1,0 +1,49 @@
+:host {
+    display: block;
+  }
+  
+  .inventory-container {
+    mat-card {
+      background-color: #fff;
+      border-radius: 8px;
+    }
+  }
+  
+  .loading-indicator, .no-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #757575;
+    min-height: 200px; // Para que ocupe espacio incluso si está vacío
+  
+    p {
+      margin-top: 16px;
+      font-style: italic;
+    }
+  }
+  
+  .mat-mdc-table {
+    width: 100%;
+    th.mat-mdc-header-cell {
+      font-weight: 500; // Un poco más de peso para los encabezados
+      color: rgba(0,0,0,.67);
+    }
+    td.mat-mdc-cell, th.mat-mdc-header-cell {
+      padding: 12px 16px; // Ajustar padding para más espacio
+    }
+  }
+  
+  // Estilo para celdas numéricas alineadas a la derecha
+  .text-right {
+    text-align: right;
+  }
+  
+  // Responsividad de la tabla
+  .overflow-x-auto {
+    @media (max-width: 768px) {
+      // En pantallas pequeñas, permite scroll horizontal si es necesario
+    }
+  }

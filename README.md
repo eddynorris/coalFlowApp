@@ -1,27 +1,53 @@
-# CoalFlowApp
+# CoalFlow App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.19.
+## Descripción
 
-## Development server
+La aplicación permite:
+* Gestionar ciudades y los depósitos de carbón asociados a cada una.
+* Visualizar el inventario de carbón por tipo y depósito.
+* Crear órdenes de traslado de carbón entre depósitos, validando stock.
+* Un dashboard simple con métricas clave.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+**Nota Importante:** La simulación de datos se realiza mediante servicios in-memory, como se especifica en los requerimientos del desafío. Por lo tanto, los datos creados o modificados durante una sesión se perderán al refrescar el navegador o reiniciar la aplicación.
 
-## Code scaffolding
+## Tech Stack y Características Clave
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+* **Angular 18:**
+    * Componentes Standalone
+    * Signals para el manejo de estado reactivo
+    * Sistema de Rutas moderno con carga diferida (Lazy Loading)
+* **TypeScript**
+* **Formularios Reactivos** con validaciones.
+* **Servicios In-Memory** para simulación de datos y lógica de negocio.
+* **Angular Material** para componentes UI y diseño responsive.
+* **SCSS** para estilos.
+* **UUID** para la generación de identificadores únicos en los datos simulados.
 
-## Build
+## Prerrequisitos
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Antes de comenzar, asegúrate de tener instalado lo siguiente:
+* Node.js (se recomienda la última versión LTS)
+* Yarn (este proyecto usa `yarn` para la gestión de dependencias por que hubo problemas al usar npm)
+* Angular CLI v18 (<code>npm install -g @angular/cli</code> o <code>yarn global add @angular/cli</code>)
 
-## Running unit tests
+## Getting Started / Instalación
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1.  **Clona el repositorio:**
+    ```bash
+    git clone <URL_DEL_REPOSITORIO_AQUI>
+    cd coalflow-app
+    ```
 
-## Running end-to-end tests
+2.  **Instala las dependencias usando Yarn:**
+    Debido a configuraciones iniciales o preferencias, este proyecto utiliza `yarn` para la instalación de dependencias.
+    ```bash
+    yarn install
+    ```
+    Si no tienes Yarn instalado, puedes instalarlo globalmente mediante npm: `npm install --global yarn`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Ejecutar la Aplicación
 
-## Further help
+Una vez instaladas las dependencias, puedes iniciar el servidor de desarrollo:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+yarn start

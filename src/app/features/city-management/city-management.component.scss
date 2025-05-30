@@ -1,0 +1,62 @@
+:host {
+    display: block; // Asegura que el componente ocupe espacio
+  }
+  
+  .form-card, .table-card {
+    background-color: #fff; // Fondo blanco para las tarjetas
+    border-radius: 8px; // Bordes redondeados
+  }
+  
+  .form-card {
+    max-width: 600px; // Ancho máximo para formularios
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    color: #757575; // Color gris para texto sin datos
+    font-style: italic;
+  }
+  
+  // Estilos para la fila seleccionada en la tabla de ciudades
+  .mat-mdc-row.selected-row {
+    background-color: rgba(63, 81, 181, 0.1); // Un color de resaltado sutil, ajusta a tu tema
+  }
+  
+  .mat-mdc-table {
+    // Evitar que la tabla se desborde sin scroll en contenedores más pequeños
+    // El div con overflow-x-auto ya maneja esto, pero es una buena práctica
+    width: 100%;
+  }
+  
+  // Ajustes para botones de acción en tablas para que no se envuelvan torpemente
+  .action-buttons button {
+    margin-left: 8px;
+  }
+  
+  // Media query para mejorar la visualización en pantallas pequeñas
+  @media (max-width: 600px) {
+    .action-buttons {
+      display: flex;
+      flex-direction: column; // Apila los botones verticalmente
+      align-items: flex-end; // Alinea los botones a la derecha
+  
+      button {
+        margin-left: 0;
+        margin-top: 4px;
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+    }
+  
+    .mat-mdc-fab.mat-mdc-fab-extended { // Botón FAB extendido
+      font-size: 0.875rem; // Reducir tamaño de fuente
+      padding: 0 12px; // Reducir padding
+      mat-icon {
+        margin-right: 4px; // Menos espacio para el icono
+      }
+    }
+  }
