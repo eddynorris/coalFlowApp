@@ -7,6 +7,7 @@ export class CityService {
   private citiesSignal: WritableSignal<City[]> = signal([
     { id: 'city1', name: 'Abancay' },
     { id: 'city2', name: 'Andahuaylas' },
+    { id: 'city3', name: 'Cusco' },
   ]);
 
   public cities = this.citiesSignal.asReadonly();

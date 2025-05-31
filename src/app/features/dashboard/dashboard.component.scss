@@ -1,26 +1,44 @@
-
 :host {
     display: block;
-    background-color: #f4f6f8; // Un fondo suave para la página del dashboard
-    min-height: calc(100vh - 64px); // Asumiendo un toolbar de 64px
   }
   
+  .dashboard-container {
+    padding: 0; // El padding ya está en .route-content-wrapper
+  }
+  
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); // Columnas responsivas
+    gap: 20px; // Espacio entre tarjetas
+  }
   
   .dashboard-card {
-    border-radius: 8px; // Bordes redondeados para las tarjetas
-    background-color: #ffffff; // Fondo blanco para las tarjetas
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important; // Sombra más pronunciada al hacer hover
+    }
   
     .mat-mdc-card-header {
-      padding-bottom: 8px; // Menos padding inferior en el header de la card
+      padding-bottom: 8px;
+      align-items: center; // Centrar verticalmente el contenido del header
     }
   
     .mat-mdc-card-title {
-      color: #333; // Color de título más oscuro
       font-weight: 500;
+      color: #333;
     }
+  
     .mat-mdc-card-subtitle {
-      color: #666; // Color de subtítulo más suave
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.3;
+    }
+  
+    .mat-mdc-card-content {
+      padding-top: 16px;
+      padding-bottom: 16px;
     }
   }
   
@@ -31,48 +49,44 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 16px; // Espacio entre avatar y texto
+    color: white; // Color del icono
+    flex-shrink: 0; // Evitar que se encoja
   
     mat-icon {
-      font-size: 28px; // Tamaño del icono dentro del avatar
+      font-size: 28px;
       width: 28px;
       height: 28px;
     }
   }
   
-  // Colores específicos para avatares (puedes usar variables de tu tema de Angular Material)
-  .bg-blue-500 { background-color: #2196f3; }
+  // Colores de avatar (puedes centralizarlos o usar el tema de Material)
+  .bg-blue-500 { background-color: #3f51b5; } // Usando el primario del tema por defecto
   .bg-green-500 { background-color: #4caf50; }
   .bg-purple-500 { background-color: #9c27b0; }
   .bg-orange-500 { background-color: #ff9800; }
-  .text-white { color: white; }
   
   
-  // Clases de Tailwind simuladas (si no usas Tailwind, defínelas o usa alternativas)
-  // Estas son solo para el ejemplo de la estructura del grid.
-  // Si tienes Tailwind configurado, estas clases funcionarán directamente.
-  .grid { display: grid; }
-  .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-  @media (min-width: 640px) { // sm
-    .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metric-value {
+    font-size: 2.5rem; // Tamaño grande para el valor numérico
+    font-weight: bold;
+    line-height: 1.1;
+    margin-bottom: 4px;
   }
-  @media (min-width: 1024px) { // lg
-    .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  
+  .metric-unit {
+    font-size: 0.9rem;
+    color: #757575;
   }
-  .gap-4 { gap: 1rem; }
-  .md\:gap-6 { 
-    @media (min-width: 768px) { // md
-      gap: 1.5rem; 
+  
+  // Colores de texto para los valores (puedes usar el tema de Material)
+  .text-blue-600 { color: #3f51b5; }
+  .text-green-600 { color: #43a047; }
+  .text-purple-600 { color: #8e24aa; }
+  .text-orange-600 { color: #fb8c00; }
+  
+  // Media query para ajustar el número de columnas si es necesario en pantallas muy grandes
+  @media (min-width: 1400px) {
+    .dashboard-grid {
+      grid-template-columns: repeat(4, 1fr); // Forzar 4 columnas en pantallas muy anchas
     }
-  }
-  .transition-shadow { transition-property: box-shadow; }
-  .duration-300 { transition-duration: 300ms; }
-  
-  // Efecto hover en tarjetas
-  .mat-mdc-card.hover\:mat-elevation-z6:hover {
-    // Angular Material maneja elevaciones con clases como mat-elevation-zN
-    // Para un efecto hover, podrías definir una clase específica o usar
-    // el sistema de elevación de Material directamente si es dinámico.
-    // Este SCSS es más para un efecto visual si no se usan clases de elevación dinámicas.
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   }

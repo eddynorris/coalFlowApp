@@ -1,144 +1,157 @@
-<div class="city-management-container p-4 md:p-6">
-    <!-- Formulario para Ciudad -->
-    <mat-card *ngIf="showCityForm()" class="form-card mb-6 mat-elevation-z4">
+<div class="city-management-container">
+    <h1 class="section-title">Gestión de Ciudades y Depósitos</h1>
+  
+    <mat-card *ngIf="showCityForm()" class="form-card mb-6 mat-elevation-z2">
       <mat-card-header>
         <mat-card-title>{{ editingCityId() ? 'Editar Ciudad' : 'Nueva Ciudad' }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form [formGroup]="cityForm" (ngSubmit)="saveCity()" class="space-y-4">
-          <mat-form-field appearance="outline" class="w-full">
+          <mat-form-field appearance="outline" class="full-width-field">
             <mat-label>Nombre de la Ciudad</mat-label>
             <input matInput formControlName="name" placeholder="Ej: Ciudad Capital" required>
             <mat-error *ngIf="cityForm.get('name')?.hasError('required')">El nombre es requerido.</mat-error>
             <mat-error *ngIf="cityForm.get('name')?.hasError('minlength')">Mínimo 3 caracteres.</mat-error>
             <mat-error *ngIf="cityForm.get('name')?.hasError('maxlength')">Máximo 50 caracteres.</mat-error>
           </mat-form-field>
-          <div class="flex justify-end space-x-2">
+          <div class="form-actions">
             <button mat-stroked-button type="button" (click)="closeCityForm()">Cancelar</button>
             <button mat-raised-button color="primary" type="submit" [disabled]="cityForm.invalid">
-              {{ editingCityId() ? 'Actualizar Ciudad' : 'Guardar Ciudad' }}
+              <mat-icon>{{ editingCityId() ? 'save' : 'add' }}</mat-icon>
+              {{ editingCityId() ? 'Actualizar' : 'Guardar' }}
             </button>
           </div>
         </form>
       </mat-card-content>
     </mat-card>
   
-    <!-- Botón para agregar nueva ciudad -->
-    <div class="mb-6 text-right" *ngIf="!showCityForm() && !selectedCity()">
-      <button mat-fab extended color="primary" (click)="openCityForm()" aria-label="Agregar nueva ciudad">
-        <mat-icon>add</mat-icon> Nueva Ciudad
-      </button>
-    </div>
-  
-    <!-- Tabla de Ciudades -->
-    <mat-card class="table-card mat-elevation-z4">
-      <mat-card-header>
-        <mat-card-title>Lista de Ciudades</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div *ngIf="cityService.cities().length === 0; else citiesTable" class="no-data">
-          No hay ciudades registradas.
-        </div>
-        <ng-template #citiesTable>
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="cityService.cities()" [trackBy]="trackById" class="w-full">
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Nombre</th>
-                <td mat-cell *matCellDef="let city">{{ city.name }}</td>
-              </ng-container>
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="text-right">Acciones</th>
-                <td mat-cell *matCellDef="let city" class="text-right action-buttons">
-                  <button mat-icon-button color="accent" (click)="selectCity(city)" aria-label="Ver depósitos de la ciudad">
-                    <mat-icon>store</mat-icon> <!-- Icono para depósitos -->
-                  </button>
-                  <button mat-icon-button color="primary" (click)="editCity(city)" aria-label="Editar ciudad">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button mat-icon-button color="warn" (click)="confirmDeleteCity(city)" aria-label="Eliminar ciudad">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="cityDisplayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: cityDisplayedColumns;" 
-                  [class.selected-row]="selectedCity()?.id === row.id"
-                  (click)="selectCity(row)"></tr>
-            </table>
-          </div>
-        </ng-template>
-      </mat-card-content>
-    </mat-card>
-  
-    <!-- Sección de Depósitos para la Ciudad Seleccionada -->
-    <div *ngIf="selectedCity()" class="mt-8">
-      <mat-divider class="my-6"></mat-divider>
-      <h2 class="text-xl font-semibold mb-1">Depósitos en: {{ selectedCity()?.name }}</h2>
-      <button mat-stroked-button (click)="selectCity(null)" class="mb-4">
-        <mat-icon>arrow_back</mat-icon> Volver a lista de ciudades
-      </button>
-  
-      <!-- Formulario para Depósito -->
-      <mat-card *ngIf="showDepotForm()" class="form-card mb-6 mat-elevation-z2">
-        <mat-card-header>
-          <mat-card-title>{{ editingDepotId() ? 'Editar Depósito' : 'Nuevo Depósito' }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="depotForm" (ngSubmit)="saveDepot()" class="space-y-4">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Nombre del Depósito</mat-label>
-              <input matInput formControlName="name" placeholder="Ej: Depósito Norte" required>
-              <mat-error *ngIf="depotForm.get('name')?.hasError('required')">El nombre es requerido.</mat-error>
-              <mat-error *ngIf="depotForm.get('name')?.hasError('minlength')">Mínimo 3 caracteres.</mat-error>
-               <mat-error *ngIf="depotForm.get('name')?.hasError('maxlength')">Máximo 50 caracteres.</mat-error>
-            </mat-form-field>
-            <div class="flex justify-end space-x-2">
-              <button mat-stroked-button type="button" (click)="closeDepotForm()">Cancelar</button>
-              <button mat-raised-button color="primary" type="submit" [disabled]="depotForm.invalid">
-                {{ editingDepotId() ? 'Actualizar Depósito' : 'Guardar Depósito' }}
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-  
-      <!-- Botón para agregar nuevo depósito -->
-      <div class="mb-4 text-right" *ngIf="!showDepotForm()">
-        <button mat-flat-button color="accent" (click)="openDepotForm()" aria-label="Agregar nuevo depósito">
-          <mat-icon>add_business</mat-icon> Nuevo Depósito
+    <div class="city-section">
+      <div class="header-actions mb-4" *ngIf="!showCityForm()">
+        <span class="table-title">Lista de Ciudades</span>
+        <button mat-fab extended color="primary" (click)="openCityForm()" aria-label="Agregar nueva ciudad">
+          <mat-icon>add_circle_outline</mat-icon> Nueva Ciudad
         </button>
       </div>
   
-      <!-- Tabla de Depósitos -->
-      <mat-card class="table-card mat-elevation-z2">
-        <mat-card-content>
-          <div *ngIf="depotsForSelectedCity().length === 0; else depotsTable" class="no-data">
-            Esta ciudad no tiene depósitos registrados.
+      <mat-card class="table-card mat-elevation-z2" *ngIf="!showCityForm()">
+        <mat-card-content [class.no-padding]="cityService.cities().length > 0">
+          <div *ngIf="cityService.cities().length === 0; else citiesTable" class="no-data-container">
+            <mat-icon class="no-data-icon" color="disabled">location_off</mat-icon>
+            <p>No hay ciudades registradas.</p>
+            <button mat-stroked-button color="primary" (click)="openCityForm()">
+              <mat-icon>add</mat-icon> Agregar Primera Ciudad
+            </button>
           </div>
-          <ng-template #depotsTable>
-            <div class="overflow-x-auto">
-              <table mat-table [dataSource]="depotsForSelectedCity()" [trackBy]="trackById" class="w-full">
+          <ng-template #citiesTable>
+            <div class="table-responsive-wrapper">
+              <table mat-table [dataSource]="cityService.cities()" [trackBy]="trackById" class="w-full">
                 <ng-container matColumnDef="name">
-                  <th mat-header-cell *matHeaderCellDef>Nombre del Depósito</th>
-                  <td mat-cell *matCellDef="let depot">{{ depot.name }}</td>
+                  <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                  <td mat-cell *matCellDef="let city">{{ city.name }}</td>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef class="text-right">Acciones</th>
-                  <td mat-cell *matCellDef="let depot" class="text-right action-buttons">
-                    <button mat-icon-button color="primary" (click)="editDepot(depot)" aria-label="Editar depósito">
-                      <mat-icon>edit_location_alt</mat-icon>
+                  <td mat-cell *matCellDef="let city" class="text-right action-buttons">
+                    <button mat-icon-button color="accent" (click)="toggleDepotDisplay(city, $event)"
+                            [matTooltip]="cityForDepotDisplay()?.id === city.id ? 'Ocultar Depósitos' : 'Ver/Gestionar Depósitos'">
+                      <mat-icon>{{ cityForDepotDisplay()?.id === city.id ? 'visibility_off' : 'storefront' }}</mat-icon>
                     </button>
-                    <button mat-icon-button color="warn" (click)="confirmDeleteDepot(depot)" aria-label="Eliminar depósito">
-                      <mat-icon>delete_forever</mat-icon>
+                    <button mat-icon-button color="primary" (click)="editCity(city, $event)" matTooltip="Editar Ciudad">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="confirmDeleteCity(city, $event)" matTooltip="Eliminar Ciudad">
+                      <mat-icon>delete_outline</mat-icon>
                     </button>
                   </td>
                 </ng-container>
-                <tr mat-header-row *matHeaderRowDef="depotDisplayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: depotDisplayedColumns;"></tr>
+                <tr mat-header-row *matHeaderRowDef="cityDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: cityDisplayedColumns;"
+                    [class.selected-row]="cityForDepotDisplay()?.id === row.id"
+                    class="city-row"></tr>
               </table>
             </div>
           </ng-template>
         </mat-card-content>
       </mat-card>
     </div>
-  </div>
+  
+    <div class="depot-section-wrapper"
+         *ngIf="cityForDepotDisplay() && !showCityForm()"
+         [@slideInOut]="(cityForDepotDisplay() && !showCityForm()) ? 'in' : 'out'">
+  
+      <mat-divider class="section-divider"></mat-divider>
+      <div class="header-actions mb-2 mt-4">
+        <h2 class="table-title">Depósitos en: <strong>{{ cityForDepotDisplay()?.name }}</strong></h2>
+        <button mat-stroked-button (click)="toggleDepotDisplay(cityForDepotDisplay()!)" class="back-button" *ngIf="!showDepotForm()">
+          <mat-icon>close</mat-icon> Cerrar Depósitos
+        </button>
+      </div>
+  
+      <mat-card *ngIf="showDepotForm()" class="form-card mb-6 mat-elevation-z2">
+        <mat-card-header>
+          <mat-card-title>{{ editingDepotId() ? 'Editar Depósito' : 'Nuevo Depósito' }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="depotForm" (ngSubmit)="saveDepot()" class="space-y-4">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Nombre del Depósito</mat-label>
+              <input matInput formControlName="name" placeholder="Ej: Depósito Norte" required>
+              <mat-error *ngIf="depotForm.get('name')?.hasError('required')">El nombre es requerido.</mat-error>
+              <mat-error *ngIf="depotForm.get('name')?.hasError('minlength')">Mínimo 3 caracteres.</mat-error>
+              <mat-error *ngIf="depotForm.get('name')?.hasError('maxlength')">Máximo 50 caracteres.</mat-error>
+            </mat-form-field>
+            <div class="form-actions">
+              <button mat-stroked-button type="button" (click)="closeDepotForm()">Cancelar</button>
+              <button mat-raised-button color="accent" type="submit" [disabled]="depotForm.invalid">
+                <mat-icon>{{ editingDepotId() ? 'save' : 'add' }}</mat-icon>
+                {{ editingDepotId() ? 'Actualizar' : 'Guardar' }}
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+  
+      <div *ngIf="!showDepotForm()">
+        <div class="header-actions mb-4">
+          <span></span> <button mat-flat-button color="accent" (click)="openDepotForm()" aria-label="Agregar nuevo depósito">
+            <mat-icon>add_business</mat-icon> Nuevo Depósito
+          </button>
+        </div>
+  
+        <mat-card class="table-card mat-elevation-z2">
+          <mat-card-content [class.no-padding]="depotsForSelectedCity().length > 0">
+            <div *ngIf="depotsForSelectedCity().length === 0; else depotsTable" class="no-data-container">
+              <mat-icon class="no-data-icon" color="disabled">no_transfer</mat-icon>
+              <p>Esta ciudad no tiene depósitos registrados.</p>
+              <button mat-stroked-button color="accent" (click)="openDepotForm()">
+                <mat-icon>add</mat-icon> Agregar Primer Depósito
+              </button>
+            </div>
+            <ng-template #depotsTable>
+              <div class="table-responsive-wrapper">
+                <table mat-table [dataSource]="depotsForSelectedCity()" [trackBy]="trackById" class="w-full">
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nombre del Depósito</th>
+                    <td mat-cell *matCellDef="let depot">{{ depot.name }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Acciones</th>
+                    <td mat-cell *matCellDef="let depot" class="text-right action-buttons">
+                      <button mat-icon-button color="primary" (click)="editDepot(depot, $event)" matTooltip="Editar Depósito">
+                        <mat-icon>edit_location_alt</mat-icon>
+                      </button>
+                      <button mat-icon-button color="warn" (click)="confirmDeleteDepot(depot, $event)" matTooltip="Eliminar Depósito">
+                        <mat-icon>delete_forever</mat-icon>
+                      </button>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="depotDisplayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: depotDisplayedColumns;"></tr>
+                </table>
+              </div>
+            </ng-template>
+          </mat-card-content>
+        </mat-card>
+      </div> 
+    </div> 
+</div>

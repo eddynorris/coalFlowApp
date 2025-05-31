@@ -3,47 +3,33 @@
   }
   
   .inventory-container {
-    mat-card {
-      background-color: #fff;
-      border-radius: 8px;
+    padding: 0; // El padding ya está en .route-content-wrapper
+  }
+  
+  .table-card {
+     .mat-mdc-card-content.no-padding {
+      padding: 0 !important; // Quitar padding si la tabla está presente
     }
   }
   
-  .loading-indicator, .no-data {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    text-align: center;
-    color: #757575;
-    min-height: 200px; // Para que ocupe espacio incluso si está vacío
+  .no-data-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
   
-    p {
-      margin-top: 16px;
-      font-style: italic;
-    }
+  .table-responsive-wrapper {
+    overflow-x: auto; // Permite scroll horizontal en tablas si es necesario
   }
   
   .mat-mdc-table {
-    width: 100%;
-    th.mat-mdc-header-cell {
-      font-weight: 500; // Un poco más de peso para los encabezados
-      color: rgba(0,0,0,.67);
-    }
-    td.mat-mdc-cell, th.mat-mdc-header-cell {
-      padding: 12px 16px; // Ajustar padding para más espacio
-    }
+    // Estilos generales de tabla ya están en styles.scss
+    // Se pueden añadir especificidades aquí si es necesario
   }
   
-  // Estilo para celdas numéricas alineadas a la derecha
   .text-right {
     text-align: right;
+    justify-content: flex-end; // Para alinear contenido en celdas de encabezado
   }
   
-  // Responsividad de la tabla
-  .overflow-x-auto {
-    @media (max-width: 768px) {
-      // En pantallas pequeñas, permite scroll horizontal si es necesario
-    }
-  }

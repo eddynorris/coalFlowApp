@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, WritableSignal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,11 +11,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { City } from '../../models/city.model';
 import { CityService } from '../../services/city.service';
 import { Depot } from '../../models/depot.model';
 import { DepotService } from '../../services/depot.service';
+import { InventoryService } from '../../services/inventory.service'; // Importar InventoryService
+import { CoalTypeService } from '../../services/coal-type.service'; // Importar CoalTypeService
 
 @Component({
   selector: 'app-city-management',
@@ -30,14 +34,34 @@ import { DepotService } from '../../services/depot.service';
     MatCardModule,
     MatDividerModule,
     MatSnackBarModule,
+    MatTooltipModule
   ],
   templateUrl: './city-management.component.html',
   styleUrls: ['./city-management.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        height: '*',
+        opacity: 1,
+        overflow: 'visible',
+        'margin-top': '24px'
+      })),
+      state('out', style({
+        height: '0px',
+        opacity: 0,
+        overflow: 'hidden',
+        'margin-top': '0px'
+      })),
+      transition('in <=> out', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class CityManagementComponent {
   public cityService = inject(CityService);
   public depotService = inject(DepotService);
+  private inventoryService = inject(InventoryService); // Inyectar InventoryService
+  private coalTypeService = inject(CoalTypeService);   // Inyectar CoalTypeService
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
 
@@ -49,14 +73,13 @@ export class CityManagementComponent {
   editingDepotId: WritableSignal<string | null> = signal(null);
   depotForm: FormGroup;
 
-  selectedCity: WritableSignal<City | null> = signal(null);
-  
+  cityForDepotDisplay: WritableSignal<City | null> = signal(null);
+
   depotsForSelectedCity = computed(() => {
-    const currentCity: City | null = this.selectedCity();
+    const currentCity = this.cityForDepotDisplay();
     if (!currentCity) {
       return [];
     }
-    // A este punto, currentCity es de tipo City
     return this.depotService.depots().filter((d: Depot) => d.cityId === currentCity.id);
   });
 
@@ -73,7 +96,8 @@ export class CityManagementComponent {
   }
 
   openCityForm(cityToEdit?: City): void {
-    this.showDepotForm.set(false); 
+    this.cityForDepotDisplay.set(null);
+    this.showDepotForm.set(false);
     this.showCityForm.set(true);
     if (cityToEdit) {
       this.editingCityId.set(cityToEdit.id);
@@ -86,7 +110,7 @@ export class CityManagementComponent {
 
   saveCity(): void {
     if (this.cityForm.invalid) {
-      this.snackBar.open('Por favor, corrige los errores en el formulario de ciudad.', 'Cerrar', { duration: 3000 });
+      this.snackBar.open('Por favor, corrige los errores en el formulario de ciudad.', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
       return;
     }
     const cityName = this.cityForm.value.name;
@@ -94,10 +118,10 @@ export class CityManagementComponent {
 
     if (currentEditingCityId) {
       this.cityService.updateCity({ id: currentEditingCityId, name: cityName });
-      this.snackBar.open(`Ciudad "${cityName}" actualizada correctamente.`, 'Cerrar', { duration: 3000 });
+      this.snackBar.open(`Ciudad "${cityName}" actualizada correctamente.`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
     } else {
       this.cityService.addCity(cityName);
-      this.snackBar.open(`Ciudad "${cityName}" creada correctamente.`, 'Cerrar', { duration: 3000 });
+      this.snackBar.open(`Ciudad "${cityName}" creada correctamente.`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
     }
     this.closeCityForm();
   }
@@ -108,41 +132,73 @@ export class CityManagementComponent {
     this.cityForm.reset();
   }
 
-  editCity(cityToEdit: City): void {
-    this.selectCity(null); 
+  editCity(cityToEdit: City, event: MouseEvent): void {
+    event.stopPropagation();
     this.openCityForm(cityToEdit);
   }
 
-  confirmDeleteCity(cityToDelete: City): void {
-    if (confirm(`¿Estás seguro de eliminar la ciudad "${cityToDelete.name}"? Esto también eliminará todos sus depósitos asociados.`)) {
-      const depotsInCity = this.depotService.getDepotsByCityId(cityToDelete.id);
-      depotsInCity.forEach(depot => this.depotService.deleteDepot(depot.id));
-      
-      this.cityService.deleteCity(cityToDelete.id);
-      this.snackBar.open(`Ciudad "${cityToDelete.name}" y sus depósitos eliminados.`, 'Cerrar', { duration: 3000 });
+  confirmDeleteCity(cityToDelete: City, event: MouseEvent): void {
+    event.stopPropagation();
 
-      const currentSelectedCity = this.selectedCity();
-      if (currentSelectedCity && currentSelectedCity.id === cityToDelete.id) {
-        this.selectCity(null); 
+    const depotsInCity = this.depotService.getDepotsByCityId(cityToDelete.id);
+    let cityHasInventory = false;
+
+    for (const depot of depotsInCity) {
+      for (const coalType of this.coalTypeService.coalTypes()) {
+        if (this.inventoryService.getStock(depot.id, coalType.id) > 0) {
+          cityHasInventory = true;
+          break;
+        }
+      }
+      if (cityHasInventory) {
+        break;
+      }
+    }
+
+    if (cityHasInventory) {
+      this.snackBar.open(
+        `No se puede eliminar la ciudad "${cityToDelete.name}" porque uno o más de sus depósitos tienen inventario.`,
+        'Cerrar',
+        { duration: 5000, panelClass: 'error-snackbar' }
+      );
+      return;
+    }
+
+    if (confirm(`¿Estás seguro de eliminar la ciudad "${cityToDelete.name}"? Esto también eliminará todos sus depósitos asociados (ya que no tienen inventario).`)) {
+      // Eliminar primero los depósitos (que ya sabemos que no tienen inventario)
+      depotsInCity.forEach(depot => this.depotService.deleteDepot(depot.id));
+      // Luego eliminar la ciudad
+      this.cityService.deleteCity(cityToDelete.id);
+      this.snackBar.open(`Ciudad "${cityToDelete.name}" y sus depósitos eliminados.`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
+
+      if (this.cityForDepotDisplay()?.id === cityToDelete.id) {
+        this.cityForDepotDisplay.set(null);
       }
     }
   }
 
-  selectCity(cityToSelect: City | null): void {
-    this.selectedCity.set(cityToSelect); // cityToSelect es City | null, lo cual es correcto para WritableSignal
-    this.closeCityForm(); 
-    this.closeDepotForm(); 
+  toggleDepotDisplay(city: City, event?: MouseEvent): void {
+    event?.stopPropagation();
+    this.closeCityForm();
+    this.closeDepotForm();
+
+    if (this.cityForDepotDisplay()?.id === city.id) {
+      this.cityForDepotDisplay.set(null);
+    } else {
+      this.cityForDepotDisplay.set(city);
+    }
   }
 
   openDepotForm(depotToEdit?: Depot): void {
-    const currentSelectedCity = this.selectedCity();
-    if (!currentSelectedCity) {
-      this.snackBar.open('Por favor, selecciona una ciudad primero.', 'Cerrar', { duration: 3000 });
+    const currentCityForDepots = this.cityForDepotDisplay();
+    if (!currentCityForDepots) {
+      this.snackBar.open('Error: No hay ciudad seleccionada para el depósito.', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
       return;
     }
+    this.showCityForm.set(false);
     this.showDepotForm.set(true);
     if (depotToEdit) {
-      this.editingDepotId.set(depotToEdit.id); // depotToEdit.id es string, correcto para WritableSignal
+      this.editingDepotId.set(depotToEdit.id);
       this.depotForm.patchValue({ name: depotToEdit.name });
     } else {
       this.editingDepotId.set(null);
@@ -151,22 +207,22 @@ export class CityManagementComponent {
   }
 
   saveDepot(): void {
-    const currentSelectedCity = this.selectedCity();
+    const currentSelectedCity = this.cityForDepotDisplay();
     if (this.depotForm.invalid || !currentSelectedCity) {
-      this.snackBar.open('Por favor, corrige los errores o selecciona una ciudad.', 'Cerrar', { duration: 3000 });
+      this.snackBar.open('Por favor, corrige los errores o asegúrate de que una ciudad esté seleccionada.', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
       return;
     }
-    // A este punto, currentSelectedCity es de tipo City
+
     const depotName = this.depotForm.value.name;
-    const cityId = currentSelectedCity.id; 
+    const cityId = currentSelectedCity.id;
     const currentEditingDepotId = this.editingDepotId();
 
     if (currentEditingDepotId) {
       this.depotService.updateDepot({ id: currentEditingDepotId, name: depotName, cityId });
-      this.snackBar.open(`Depósito "${depotName}" actualizado.`, 'Cerrar', { duration: 3000 });
+      this.snackBar.open(`Depósito "${depotName}" actualizado.`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
     } else {
       this.depotService.addDepot(depotName, cityId);
-      this.snackBar.open(`Depósito "${depotName}" agregado a ${currentSelectedCity.name}.`, 'Cerrar', { duration: 3000 });
+      this.snackBar.open(`Depósito "${depotName}" agregado a ${currentSelectedCity.name}.`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
     }
     this.closeDepotForm();
   }
@@ -177,14 +233,34 @@ export class CityManagementComponent {
     this.depotForm.reset();
   }
 
-  editDepot(depotToEdit: Depot): void {
+  editDepot(depotToEdit: Depot, event: MouseEvent): void {
+    event.stopPropagation();
     this.openDepotForm(depotToEdit);
   }
 
-  confirmDeleteDepot(depotToDelete: Depot): void {
+  confirmDeleteDepot(depotToDelete: Depot, event: MouseEvent): void {
+    event.stopPropagation();
+    // Validar si el depósito individual tiene stock
+    let depotHasInventory = false;
+    for (const coalType of this.coalTypeService.coalTypes()) {
+        if (this.inventoryService.getStock(depotToDelete.id, coalType.id) > 0) {
+            depotHasInventory = true;
+            break;
+        }
+    }
+
+    if (depotHasInventory) {
+        this.snackBar.open(
+            `No se puede eliminar el depósito "${depotToDelete.name}" porque tiene inventario.`,
+            'Cerrar',
+            { duration: 5000, panelClass: 'error-snackbar' }
+        );
+        return;
+    }
+
     if (confirm(`¿Estás seguro de eliminar el depósito "${depotToDelete.name}"?`)) {
       this.depotService.deleteDepot(depotToDelete.id);
-      this.snackBar.open(`Depósito "${depotToDelete.name}" eliminado.`, 'Cerrar', { duration: 3000 });
+      this.snackBar.open(`Depósito "${depotToDelete.name}" eliminado.`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
     }
   }
 

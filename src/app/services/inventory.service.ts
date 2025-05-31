@@ -12,7 +12,7 @@ export class InventoryService {
     { id: 'inv2', depotId: 'depot1', coalTypeId: 'type2', quantity: 50, lastUpdated: new Date() },
     { id: 'inv3', depotId: 'depot1', coalTypeId: 'type3', quantity: 75, lastUpdated: new Date() },
     { id: 'inv4', depotId: 'depot2', coalTypeId: 'type2', quantity: 80, lastUpdated: new Date() },
-    { id: 'inv5', depotId: 'depot2', coalTypeId: 'type1', quantity: 50, lastUpdated: new Date() },
+    { id: 'inv5', depotId: 'depot3', coalTypeId: 'type1', quantity: 50, lastUpdated: new Date() },
     { id: 'inv6', depotId: 'depot3', coalTypeId: 'type1', quantity: 75, lastUpdated: new Date() },
   ]);
 
@@ -89,10 +89,4 @@ export class InventoryService {
     return newInventoryItem;
   }
 
-  /**
-   * (Opcional) Obtiene todos los items de inventario para un depósito específico.
-   */
-  getInventoryByDepot(depotId: string): InventoryItem[] {
-    return this.inventoryItems().filter(item => item.depotId === depotId);
-  }
 }

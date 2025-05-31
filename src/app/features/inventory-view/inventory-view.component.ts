@@ -10,6 +10,7 @@ import { InventoryService } from '../../services/inventory.service';
 import { DepotService } from '../../services/depot.service';
 import { CityService } from '../../services/city.service';
 import { CoalTypeService } from '../../services/coal-type.service';
+import { MatIcon } from '@angular/material/icon';
 
 // Interface para el objeto combinado que se mostrará en la tabla
 export interface DisplayInventoryItem {
@@ -32,6 +33,7 @@ export interface DisplayInventoryItem {
     MatCardModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatIcon,
   ],
   templateUrl: './inventory-view.component.html',
   styleUrls: ['./inventory-view.component.scss'],

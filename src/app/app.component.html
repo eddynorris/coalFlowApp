@@ -1,13 +1,59 @@
-
-<mat-toolbar color="primary">
-  <span>CoalFlow App</span>
+<mat-toolbar color="primary" class="mat-elevation-z4 app-toolbar">
+  <button
+    mat-icon-button
+    (click)="sidenav.toggle()"
+    *ngIf="isHandset$ | async"
+    aria-label="Toggle Sidenav">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span class="app-title">CoalFlow App</span>
   <span class="spacer"></span>
-  <a mat-button routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
-  <a mat-button routerLink="/cities" routerLinkActive="active-link">Ciudades</a>
-  <a mat-button routerLink="/inventory" routerLinkActive="active-link">Inventario</a>
-  <a mat-button routerLink="/transfer-orders" routerLinkActive="active-link">Traslados</a>
+  <ng-container *ngIf="!(isHandset$ | async)">
+    <a mat-button routerLink="/dashboard" routerLinkActive="active-link">
+      <mat-icon>dashboard</mat-icon> Dashboard
+    </a>
+    <a mat-button routerLink="/cities" routerLinkActive="active-link">
+      <mat-icon>location_city</mat-icon> Ciudades
+    </a>
+    <a mat-button routerLink="/inventory" routerLinkActive="active-link">
+      <mat-icon>inventory_2</mat-icon> Inventario
+    </a>
+    <a mat-button routerLink="/transfer-orders" routerLinkActive="active-link">
+      <mat-icon>local_shipping</mat-icon> Traslados
+    </a>
+  </ng-container>
 </mat-toolbar>
 
-<div class="container mx-auto p-4">
-  <router-outlet></router-outlet>
-</div>
+<mat-sidenav-container class="app-sidenav-container">
+  <mat-sidenav #sidenav
+               [mode]="(isHandset$ | async) ? 'over' : 'side'"
+               [opened]="(isHandset$ | async) === false"
+               class="app-sidenav">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" (click)="sidenav.mode === 'over' && sidenav.close()">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/cities" (click)="sidenav.mode === 'over' && sidenav.close()">
+        <mat-icon matListItemIcon>location_city</mat-icon>
+        <span matListItemTitle>Ciudades</span>
+      </a>
+      <a mat-list-item routerLink="/inventory" (click)="sidenav.mode === 'over' && sidenav.close()">
+        <mat-icon matListItemIcon>inventory_2</mat-icon>
+        <span matListItemTitle>Inventario</span>
+      </a>
+      <a mat-list-item routerLink="/transfer-orders" (click)="sidenav.mode === 'over' && sidenav.close()">
+        <mat-icon matListItemIcon>local_shipping</mat-icon>
+        <span matListItemTitle>Traslados</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="app-sidenav-content">
+    <main class="app-content-area">
+      <div class="route-content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

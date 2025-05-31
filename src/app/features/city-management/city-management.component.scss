@@ -1,62 +1,126 @@
 :host {
-    display: block; // Asegura que el componente ocupe espacio
+    display: block;
   }
   
-  .form-card, .table-card {
-    background-color: #fff; // Fondo blanco para las tarjetas
-    border-radius: 8px; // Bordes redondeados
+  .city-management-container {
+    padding: 0; // El padding ya está en .route-content-wrapper
+  }
+  
+  .city-section {
+    margin-bottom: 24px; // Espacio antes de que aparezca la sección de depósitos
+  }
+  
+  .depot-section-wrapper {
+    // La animación se encarga del margin-top cuando está visible
+    overflow: hidden; // Necesario para que la animación de altura funcione bien
+  }
+  
+  .header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap; // Para que los botones se ajusten en pantallas pequeñas
+    gap: 8px;
+  }
+  
+  .table-title {
+    font-size: 1.25rem; // 20px
+    font-weight: 500;
+    color: var(--app-text-color, rgba(0,0,0,.87)); // Usar variable si se define para tema oscuro
   }
   
   .form-card {
-    max-width: 600px; // Ancho máximo para formularios
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .no-data {
-    padding: 20px;
-    text-align: center;
-    color: #757575; // Color gris para texto sin datos
-    font-style: italic;
-  }
-  
-  // Estilos para la fila seleccionada en la tabla de ciudades
-  .mat-mdc-row.selected-row {
-    background-color: rgba(63, 81, 181, 0.1); // Un color de resaltado sutil, ajusta a tu tema
-  }
-  
-  .mat-mdc-table {
-    // Evitar que la tabla se desborde sin scroll en contenedores más pequeños
-    // El div con overflow-x-auto ya maneja esto, pero es una buena práctica
-    width: 100%;
-  }
-  
-  // Ajustes para botones de acción en tablas para que no se envuelvan torpemente
-  .action-buttons button {
-    margin-left: 8px;
-  }
-  
-  // Media query para mejorar la visualización en pantallas pequeñas
-  @media (max-width: 600px) {
-    .action-buttons {
+    .form-actions {
       display: flex;
-      flex-direction: column; // Apila los botones verticalmente
-      align-items: flex-end; // Alinea los botones a la derecha
-  
-      button {
-        margin-left: 0;
-        margin-top: 4px;
-        &:first-child {
-          margin-top: 0;
-        }
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+      button mat-icon {
+        margin-right: 8px;
       }
     }
+  }
   
-    .mat-mdc-fab.mat-mdc-fab-extended { // Botón FAB extendido
-      font-size: 0.875rem; // Reducir tamaño de fuente
-      padding: 0 12px; // Reducir padding
+  .table-card {
+    .mat-mdc-card-content.no-padding {
+      padding: 0 !important;
+    }
+  }
+  
+  .no-data-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .table-responsive-wrapper {
+    overflow-x: auto;
+  }
+  
+  .mat-mdc-row.city-row { // Aplicar a las filas de ciudad
+    // Quitar cursor pointer de toda la fila si no es clickeable
+    // &.interactive-row {
+    //   cursor: pointer;
+    //   &:hover {
+    //     background-color: rgba(0,0,0,0.04);
+    //   }
+    // }
+    &.selected-row {
+      background-color: rgba(63, 81, 181, 0.1); // Color primario con opacidad
+      td {
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .back-button {
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+  
+  .section-divider {
+    margin-top: 24px;
+    margin-bottom: 0px; // El wrapper de depot-section ya tiene margin-top
+  }
+  
+  
+  // Ajustes para botones FAB extendidos en pantallas pequeñas
+  @media (max-width: 600px) {
+    .mat-mdc-fab.mat-mdc-fab-extended {
+      font-size: 0.875rem;
+      padding: 0 12px;
+      height: 40px;
       mat-icon {
-        margin-right: 4px; // Menos espacio para el icono
+        margin-right: 4px;
       }
     }
+  
+    .header-actions {
+      flex-direction: column;
+      align-items: stretch; // Para que el título y el botón ocupen el ancho
+      
+      .table-title {
+        margin-bottom: 8px; // Espacio si el botón está debajo
+        text-align: center;
+      }
+      
+      button {
+        width: 100%; 
+      }
+    }
+    .depot-section-wrapper .header-actions {
+       flex-direction: row; // Mantener en fila para "Depósitos en:" y "Cerrar"
+       align-items: center;
+       .table-title {
+          text-align: left;
+          margin-bottom: 0;
+       }
+       button {
+          width: auto; // El botón de cerrar no ocupa todo el ancho
+       }
+    }
+  
   }

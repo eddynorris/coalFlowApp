@@ -34,7 +34,7 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
 1.  **Clona el repositorio:**
     ```bash
-    git clone <URL_DEL_REPOSITORIO_AQUI>
+    git clone <https://github.com/eddynorris/coalFlowApp.git>
     cd coalflow-app
     ```
 
@@ -50,4 +50,9 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 Una vez instaladas las dependencias, puedes iniciar el servidor de desarrollo:
 
 ```bash
-yarn start
+yarn start 
+o 
+npm start
+
+Arquitectura
+La aplicación sigue un patrón de arquitectura basado en componentes, con una separación entre la presentación (componentes), la lógica de negocio y el estado (servicios y Signals), y la navegación (Angular Router). El uso de Angular Material facilita la creación de una interfaz de usuario moderna y responsiva.

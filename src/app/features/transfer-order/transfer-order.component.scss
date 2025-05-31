@@ -1,71 +1,108 @@
-
 :host {
     display: block;
   }
   
   .transfer-order-container {
-    .form-card, .table-card {
-      background-color: #fff;
-      border-radius: 8px;
-    }
+    padding: 0; // El padding ya está en .route-content-wrapper
+  }
   
-    .form-card {
-      max-width: 700px; // Un poco más de ancho para el formulario de traslados
-      margin-left: auto;
-      margin-right: auto;
+  .transfer-layout {
+    display: grid;
+    gap: 24px;
+
+  }
+  
+  .form-card {
+    max-width: 100%; // Ocupa el ancho disponible en el grid
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+      button mat-icon, button .mat-mdc-progress-spinner {
+        margin-right: 8px;
+      }
+    }
+  }
+  
+  .form-section-title {
+    font-size: 1.25rem; // 20px
+    font-weight: 500;
+    margin-bottom: 0.5rem; // Menos margen si está dentro de un card header
+  }
+  
+  .table-card {
+    .mat-mdc-card-content.no-padding {
+      padding: 0 !important;
     }
   }
   
   .available-stock-info {
-    font-size: 0.875rem; // 14px
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 0.25rem; // Espacio entre icono y texto
-  }
+    padding: 8px 12px;
+    border-radius: 4px;
+    background-color: #e8eaf6; // Un color de fondo suave (índigo claro)
+    color: #3f51b5; // Color primario
+    border: 1px solid #c5cae9;
   
-  .no-data {
-    padding: 20px;
-    text-align: center;
-    color: #757575;
-    font-style: italic;
-    min-height: 100px;
-  }
-  
-  .mat-mdc-table {
-    width: 100%;
-    th.mat-mdc-header-cell {
-      font-weight: 500;
-      color: rgba(0,0,0,.67);
+    .info-icon {
+      margin-right: 8px;
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
     }
+  
+    strong {
+      font-weight: 500;
+      margin-left: 4px;
+    }
+  }
+  
+  .no-data-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .table-responsive-wrapper {
+    overflow-x: auto;
   }
   
   .text-right {
     text-align: right;
+    justify-content: flex-end;
   }
   
-  // Estilos para los badges de estado
   .status-badge {
-    padding: 4px 8px;
-    border-radius: 12px; // Más redondeado para badges
-    font-size: 0.75rem; // Más pequeño
+    padding: 5px 10px;
+    border-radius: 16px;
+    font-size: 0.78rem;
     font-weight: 500;
-    text-transform: uppercase;
-    display: inline-block; // Para que el padding funcione bien
+    line-height: 1;
+    text-transform: capitalize; // Para que 'pending' se vea como 'Pending'
+    display: inline-block;
+    border: 1px solid transparent;
   
     &.status-pending {
-      background-color: #e3f2fd; // Azul claro
-      color: #1e88e5; // Azul oscuro
-      border: 1px solid #90caf9;
+      background-color: #fff3e0; // Naranja muy claro
+      color: #e65100;       // Naranja oscuro
+      border-color: #ffe0b2;
     }
     &.status-completed {
-      background-color: #e8f5e9; // Verde claro
-      color: #388e3c; // Verde oscuro
-      border: 1px solid #a5d6a7;
+      background-color: #e8f5e9; // Verde muy claro
+      color: #2e7d32;       // Verde oscuro
+      border-color: #c8e6c9;
     }
     &.status-cancelled {
-      background-color: #ffebee; // Rojo claro
-      color: #d32f2f; // Rojo oscuro
-      border: 1px solid #ef9a9a;
+      background-color: #ffebee; // Rojo muy claro
+      color: #c62828;       // Rojo oscuro
+      border-color: #ffcdd2;
     }
   }
   
+  .inline-spinner {
+    display: inline-block;
+    vertical-align: middle;
+  }

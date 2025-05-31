@@ -1,130 +1,134 @@
-<div class="transfer-order-container p-4 md:p-6">
-    <!-- Formulario para Nueva Orden de Traslado -->
-    <mat-card class="form-card mb-8 mat-elevation-z4">
-      <mat-card-header>
-        <mat-card-title>
-          <h2 class="text-xl font-semibold">Crear Nueva Orden de Traslado</h2>
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form [formGroup]="transferForm" (ngSubmit)="onSubmit()" class="space-y-4">
-          <!-- Depósito Origen -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Depósito Origen</mat-label>
-            <mat-select formControlName="fromDepotId" required>
-              <mat-option *ngFor="let depot of depotService.depots()" [value]="depot.id">
-                {{ depot.name }} ({{ cityService.getCityById(depot.cityId)?.name }})
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="transferForm.get('fromDepotId')?.hasError('required')">
-              El depósito origen es requerido.
-            </mat-error>
-          </mat-form-field>
+<div class="transfer-order-container">
+    <h1 class="section-title">Órdenes de Traslado</h1>
   
-          <!-- Depósito Destino -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Depósito Destino</mat-label>
-            <mat-select formControlName="toDepotId" required>
-              <mat-option *ngFor="let depot of depotService.depots()" [value]="depot.id">
-                {{ depot.name }} ({{ cityService.getCityById(depot.cityId)?.name }})
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="transferForm.get('toDepotId')?.hasError('required')">
-              El depósito destino es requerido.
-            </mat-error>
-            <mat-error *ngIf="transferForm.hasError('depotsSame') && !transferForm.get('toDepotId')?.hasError('required')">
-              El depósito origen y destino no pueden ser el mismo.
-            </mat-error>
-          </mat-form-field>
+    <div class="transfer-layout">
+      <mat-card class="form-card mat-elevation-z2">
+        <mat-card-header>
+          <mat-card-title>
+            <h2 class="form-section-title">Crear Nueva Orden</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="transferForm" (ngSubmit)="onSubmit()" class="space-y-4">
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Depósito Origen</mat-label>
+              <mat-select formControlName="fromDepotId" required>
+                <mat-option *ngFor="let depot of depotService.depots()" [value]="depot.id">
+                  {{ depot.name }} ({{ cityService.getCityById(depot.cityId)?.name }})
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="transferForm.get('fromDepotId')?.hasError('required')">
+                El depósito origen es requerido.
+              </mat-error>
+            </mat-form-field>
   
-          <!-- Tipo de Carbón -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Tipo de Carbón</mat-label>
-            <mat-select formControlName="coalTypeId" required>
-              <mat-option *ngFor="let type of coalTypeService.coalTypes()" [value]="type.id">
-                {{ type.name }}
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="transferForm.get('coalTypeId')?.hasError('required')">
-              El tipo de carbón es requerido.
-            </mat-error>
-          </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Depósito Destino</mat-label>
+              <mat-select formControlName="toDepotId" required>
+                <mat-option *ngFor="let depot of depotService.depots()" [value]="depot.id">
+                  {{ depot.name }} ({{ cityService.getCityById(depot.cityId)?.name }})
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="transferForm.get('toDepotId')?.hasError('required')">
+                El depósito destino es requerido.
+              </mat-error>
+              <mat-error *ngIf="transferForm.hasError('depotsSame') && !transferForm.get('toDepotId')?.hasError('required')">
+                El depósito origen y destino no pueden ser el mismo.
+              </mat-error>
+            </mat-form-field>
   
-          <!-- Stock Disponible (informativo) -->
-          <div *ngIf="availableStock() !== null" class="available-stock-info p-2 bg-blue-50 border border-blue-200 rounded-md text-sm">
-            <mat-icon class="align-middle mr-1 text-blue-600" fontSet="material-icons-outlined">inventory_2</mat-icon>
-            Stock disponible en origen: 
-            <strong class="text-blue-700">{{ availableStock() | number:'1.0-2' }}</strong> toneladas.
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Tipo de Carbón</mat-label>
+              <mat-select formControlName="coalTypeId" required>
+                <mat-option *ngFor="let type of coalTypeService.coalTypes()" [value]="type.id">
+                  {{ type.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="transferForm.get('coalTypeId')?.hasError('required')">
+                El tipo de carbón es requerido.
+              </mat-error>
+            </mat-form-field>
+  
+            <div *ngIf="availableStock() !== null && transferForm.get('fromDepotId')?.value && transferForm.get('coalTypeId')?.value"
+                 class="available-stock-info">
+              <mat-icon class="info-icon" color="accent">info_outline</mat-icon>
+              Stock disponible en origen:
+              <strong>{{ availableStock() | number:'1.0-2' }}</strong> toneladas.
+            </div>
+  
+            <mat-form-field appearance="outline" class="full-width-field">
+              <mat-label>Cantidad a Transferir (toneladas)</mat-label>
+              <input matInput type="number" formControlName="quantity" placeholder="Ej: 10.5" required>
+              <mat-error *ngIf="transferForm.get('quantity')?.hasError('required')">La cantidad es requerida.</mat-error>
+              <mat-error *ngIf="transferForm.get('quantity')?.hasError('min')">La cantidad debe ser mayor a 0.</mat-error>
+              <mat-error *ngIf="transferForm.get('quantity')?.hasError('max')">
+                La cantidad excede el stock disponible ({{ availableStock() | number:'1.0-2' }} ton).
+              </mat-error>
+            </mat-form-field>
+  
+            <div class="form-actions">
+              <button mat-raised-button color="primary" type="submit" [disabled]="transferForm.invalid || isSubmitting()">
+                <mat-icon *ngIf="!isSubmitting()">send</mat-icon>
+                <mat-progress-spinner *ngIf="isSubmitting()" mode="indeterminate" diameter="20" class="inline-spinner"></mat-progress-spinner>
+                {{ isSubmitting() ? 'Procesando...' : 'Crear Orden' }}
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+  
+      <mat-card class="table-card mat-elevation-z2">
+        <mat-card-header>
+          <mat-card-title>
+            <h2 class="form-section-title">Historial de Órdenes</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content [class.no-padding]="transferOrderService.transferOrders().length > 0">
+          <div *ngIf="transferOrderService.transferOrders().length === 0; else ordersTable" class="no-data-container">
+             <mat-icon class="no-data-icon" color="disabled">receipt_long</mat-icon>
+            <p>No hay órdenes de traslado registradas.</p>
           </div>
+          <ng-template #ordersTable>
+            <div class="table-responsive-wrapper">
+              <table mat-table [dataSource]="transferOrderService.transferOrders()" [trackBy]="trackOrderById" class="w-full">
+                <ng-container matColumnDef="fromDepot">
+                  <th mat-header-cell *matHeaderCellDef>Origen</th>
+                  <td mat-cell *matCellDef="let order" [matTooltip]="getCityNameForDepot(order.fromDepotId) || ''">
+                    {{ getDepotName(order.fromDepotId) }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="toDepot">
+                  <th mat-header-cell *matHeaderCellDef>Destino</th>
+                  <td mat-cell *matCellDef="let order" [matTooltip]="getCityNameForDepot(order.toDepotId) || ''">
+                    {{ getDepotName(order.toDepotId) }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="coalType">
+                  <th mat-header-cell *matHeaderCellDef>Tipo Carbón</th>
+                  <td mat-cell *matCellDef="let order">{{ getCoalTypeName(order.coalTypeId) }}</td>
+                </ng-container>
+                <ng-container matColumnDef="quantity">
+                  <th mat-header-cell *matHeaderCellDef class="text-right">Cantidad (Ton)</th>
+                  <td mat-cell *matCellDef="let order" class="text-right">{{ order.quantity | number:'1.0-2' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="orderDate">
+                  <th mat-header-cell *matHeaderCellDef>Fecha Orden</th>
+                  <td mat-cell *matCellDef="let order">{{ order.orderDate | date:'dd/MM/yy HH:mm' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let order">
+                    <span class="status-badge" [ngClass]="'status-' + order.status">{{ order.status | titlecase }}</span>
+                  </td>
+                </ng-container>
   
-          <!-- Cantidad -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Cantidad a Transferir (toneladas)</mat-label>
-            <input matInput type="number" formControlName="quantity" placeholder="Ej: 10.5" required>
-            <mat-error *ngIf="transferForm.get('quantity')?.hasError('required')">La cantidad es requerida.</mat-error>
-            <mat-error *ngIf="transferForm.get('quantity')?.hasError('min')">La cantidad debe ser mayor a 0.</mat-error>
-            <mat-error *ngIf="transferForm.get('quantity')?.hasError('max')">
-              La cantidad excede el stock disponible ({{ availableStock() | number:'1.0-2' }} ton).
-            </mat-error>
-          </mat-form-field>
-  
-          <div class="flex justify-end mt-6">
-            <button mat-raised-button color="primary" type="submit" [disabled]="transferForm.invalid || isSubmitting()">
-              <mat-icon *ngIf="!isSubmitting()">send</mat-icon>
-              <mat-progress-spinner *ngIf="isSubmitting()" mode="indeterminate" diameter="20" class="inline-block mr-2"></mat-progress-spinner>
-              {{ isSubmitting() ? 'Procesando...' : 'Crear Orden' }}
-            </button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
-  
-    <!-- Tabla de Órdenes de Traslado Creadas -->
-    <mat-card class="table-card mat-elevation-z4">
-      <mat-card-header>
-        <mat-card-title>
-          <h2 class="text-xl font-semibold">Historial de Órdenes de Traslado</h2>
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div *ngIf="transferOrderService.transferOrders().length === 0; else ordersTable" class="no-data">
-          No hay órdenes de traslado registradas.
-        </div>
-        <ng-template #ordersTable>
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="transferOrderService.transferOrders()" [trackBy]="trackOrderById" class="w-full">
-              <ng-container matColumnDef="fromDepot">
-                <th mat-header-cell *matHeaderCellDef>Origen</th>
-                <td mat-cell *matCellDef="let order" [matTooltip]="getCityNameForDepot(order.fromDepotId)">{{ getDepotName(order.fromDepotId) }}</td>
-              </ng-container>
-              <ng-container matColumnDef="toDepot">
-                <th mat-header-cell *matHeaderCellDef>Destino</th>
-                <td mat-cell *matCellDef="let order" [matTooltip]="getCityNameForDepot(order.toDepotId)">{{ getDepotName(order.toDepotId) }}</td>
-              </ng-container>
-              <ng-container matColumnDef="coalType">
-                <th mat-header-cell *matHeaderCellDef>Tipo Carbón</th>
-                <td mat-cell *matCellDef="let order">{{ getCoalTypeName(order.coalTypeId) }}</td>
-              </ng-container>
-              <ng-container matColumnDef="quantity">
-                <th mat-header-cell *matHeaderCellDef class="text-right">Cantidad (Ton)</th>
-                <td mat-cell *matCellDef="let order" class="text-right">{{ order.quantity | number:'1.0-2' }}</td>
-              </ng-container>
-              <ng-container matColumnDef="orderDate">
-                <th mat-header-cell *matHeaderCellDef>Fecha Orden</th>
-                <td mat-cell *matCellDef="let order">{{ order.orderDate | date:'dd/MM/yy HH:mm' }}</td>
-              </ng-container>
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Estado</th>
-                <td mat-cell *matCellDef="let order">
-                  <span class="status-badge" [ngClass]="'status-' + order.status">{{ order.status | titlecase }}</span>
-                </td>
-              </ng-container>
-  
-              <tr mat-header-row *matHeaderRowDef="orderDisplayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: orderDisplayedColumns;"></tr>
-            </table>
-          </div>
-        </ng-template>
-      </mat-card-content>
-    </mat-card>
+                <tr mat-header-row *matHeaderRowDef="orderDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: orderDisplayedColumns;"></tr>
+              </table>
+            </div>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
+  

@@ -1,73 +1,71 @@
-<div class="dashboard-container p-4 md:p-6">
-    <h1 class="text-3xl font-semibold mb-6 text-gray-700 dark:text-gray-200">Panel de Control - CoalFlow</h1>
-    
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-      <!-- Card: Total Stock -->
-      <mat-card class="dashboard-card mat-elevation-z3 hover:mat-elevation-z6 transition-shadow duration-300">
+<div class="dashboard-container">
+    <h1 class="section-title">Panel de Control - CoalFlow</h1>
+    <p class="section-subtitle">Resumen general</p>
+  
+    <div class="dashboard-grid">
+      <mat-card class="dashboard-card mat-elevation-z3">
         <mat-card-header class="items-center">
-          <div mat-card-avatar class="dashboard-avatar bg-blue-500 text-white">
+          <div mat-card-avatar class="dashboard-avatar bg-blue-500">
             <mat-icon>inventory_2</mat-icon>
           </div>
-          <mat-card-title class="text-lg">Stock Total</mat-card-title>
+          <mat-card-title>Stock Total</mat-card-title>
           <mat-card-subtitle>Toneladas disponibles</mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content class="text-center py-4">
-          <p class="text-4xl font-bold text-blue-600 dark:text-blue-400">
+        <mat-card-content class="text-center">
+          <p class="metric-value text-blue-600">
             {{ totalStock() | number:'1.0-2' }}
           </p>
-          <p class="text-sm text-gray-500">Ton.</p>
+          <p class="metric-unit">Ton.</p>
         </mat-card-content>
       </mat-card>
   
-      <!-- Card: Depósitos Activos -->
-      <mat-card class="dashboard-card mat-elevation-z3 hover:mat-elevation-z6 transition-shadow duration-300">
+      <mat-card class="dashboard-card mat-elevation-z3">
         <mat-card-header class="items-center">
-          <div mat-card-avatar class="dashboard-avatar bg-green-500 text-white">
+          <div mat-card-avatar class="dashboard-avatar bg-green-500">
             <mat-icon>store</mat-icon>
           </div>
-          <mat-card-title class="text-lg">Depósitos Activos</mat-card-title>
+          <mat-card-title>Depósitos Activos</mat-card-title>
           <mat-card-subtitle>Unidades operativas</mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content class="text-center py-4">
-          <p class="text-4xl font-bold text-green-600 dark:text-green-400">
+        <mat-card-content class="text-center">
+          <p class="metric-value text-green-600">
             {{ activeDepotsCount() }}
           </p>
-           <p class="text-sm text-gray-500">Depósitos</p>
+          <p class="metric-unit">Depósitos</p>
         </mat-card-content>
       </mat-card>
   
-      <!-- Card: Ciudades Registradas -->
-      <mat-card class="dashboard-card mat-elevation-z3 hover:mat-elevation-z6 transition-shadow duration-300">
+      <mat-card class="dashboard-card mat-elevation-z3">
         <mat-card-header class="items-center">
-          <div mat-card-avatar class="dashboard-avatar bg-purple-500 text-white">
+          <div mat-card-avatar class="dashboard-avatar bg-purple-500">
             <mat-icon>location_city</mat-icon>
           </div>
-          <mat-card-title class="text-lg">Ciudades</mat-card-title>
+          <mat-card-title>Ciudades</mat-card-title>
           <mat-card-subtitle>Localidades cubiertas</mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content class="text-center py-4">
-          <p class="text-4xl font-bold text-purple-600 dark:text-purple-400">
+        <mat-card-content class="text-center">
+          <p class="metric-value text-purple-600">
             {{ citiesCount() }}
           </p>
-          <p class="text-sm text-gray-500">Ciudades</p>
+          <p class="metric-unit">Ciudades</p>
         </mat-card-content>
       </mat-card>
   
-      <!-- Card: Órdenes de Traslado -->
-      <mat-card class="dashboard-card mat-elevation-z3 hover:mat-elevation-z6 transition-shadow duration-300">
+      <mat-card class="dashboard-card mat-elevation-z3">
         <mat-card-header class="items-center">
-          <div mat-card-avatar class="dashboard-avatar bg-orange-500 text-white">
+          <div mat-card-avatar class="dashboard-avatar bg-orange-500">
             <mat-icon>local_shipping</mat-icon>
           </div>
-          <mat-card-title class="text-lg">Órdenes Traslado</mat-card-title>
+          <mat-card-title>Órdenes Traslado</mat-card-title>
           <mat-card-subtitle>Movimientos registrados</mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content class="text-center py-4">
-          <p class="text-4xl font-bold text-orange-600 dark:text-orange-400">
+        <mat-card-content class="text-center">
+          <p class="metric-value text-orange-600">
             {{ transferOrdersCount() }}
           </p>
-          <p class="text-sm text-gray-500">Órdenes</p>
+          <p class="metric-unit">Órdenes</p>
         </mat-card-content>
       </mat-card>
     </div>
   </div>
+  
